@@ -25,7 +25,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load saved theme preference on mount
   useEffect(() => {
     loadThemePreference();
   }, []);
@@ -37,7 +36,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         setThemeModeState(savedTheme);
       }
     } catch (error) {
-      // Error loading theme preference
+      
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +46,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     try {
       await AsyncStorage.setItem(THEME_STORAGE_KEY, mode);
     } catch (error) {
-      // Error saving theme preference
+      
     }
   };
 
@@ -64,7 +63,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const theme = themeMode === 'dark' ? darkTheme : lightTheme;
   const isDarkMode = themeMode === 'dark';
 
-  // Don't render children until theme is loaded
   if (isLoading) {
     return null;
   }

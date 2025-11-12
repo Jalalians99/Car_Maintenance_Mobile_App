@@ -35,7 +35,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
   const [loading, setLoading] = useState(false);
   const [loadingCar, setLoadingCar] = useState(true);
 
-  // Form fields
   const [maintenanceDate, setMaintenanceDate] = useState(new Date().toISOString().split('T')[0]);
   const [mileage, setMileage] = useState('');
   const [description, setDescription] = useState('');
@@ -43,7 +42,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
   const [cost, setCost] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Validation errors
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
@@ -56,7 +54,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
       const carData = await DatabaseService.getCar(carId);
       if (carData) {
         setCar(carData);
-        // Pre-fill mileage with current car mileage
         if (carData.mileage) {
           setMileage(carData.mileage.toString());
         }
@@ -182,7 +179,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
         </Card>
 
         <Surface style={styles.formContainer}>
-          {/* Maintenance Date */}
           <View style={styles.inputGroup}>
             <DatePicker
               label="Maintenance Date *"
@@ -197,7 +193,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
             )}
           </View>
 
-          {/* Mileage */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Mileage (optional)</Text>
             <TextInput
@@ -213,7 +208,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
             {errors.mileage && <HelperText type="error">{errors.mileage}</HelperText>}
           </View>
 
-          {/* Description */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Description *</Text>
             <TextInput
@@ -231,7 +225,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
             )}
           </View>
 
-          {/* Performed By */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Performed By (optional)</Text>
             <TextInput
@@ -243,7 +236,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
             />
           </View>
 
-          {/* Cost/Expense */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Cost/Expense (optional)</Text>
             <TextInput
@@ -259,7 +251,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
             {errors.cost && <HelperText type="error">{errors.cost}</HelperText>}
           </View>
 
-          {/* Notes */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Notes (optional)</Text>
             <TextInput
@@ -273,7 +264,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
             />
           </View>
 
-          {/* Action Buttons */}
           <View style={styles.buttonContainer}>
             <Button
               mode="outlined"

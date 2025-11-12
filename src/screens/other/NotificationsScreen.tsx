@@ -49,21 +49,16 @@ const NotificationsScreen: React.FC = () => {
     try {
       setLoading(true);
 
-      // Get all user's reminders
       const reminders = await DatabaseService.getUserReminders(user.id);
-      
-      // Get all user's cars (for car names)
       const cars = await DatabaseService.getUserCars(user.id);
 
       const reminderNotifications: ReminderNotification[] = [];
 
       for (const reminder of reminders) {
-        // Skip if reminder is invalid
         if (!reminder || !reminder.id || !reminder.reminderDate) {
           continue;
         }
 
-        // Skip completed/dismissed reminders
         if (reminder.status === 'completed' || reminder.status === 'dismissed') {
           continue;
         }
@@ -79,12 +74,11 @@ const NotificationsScreen: React.FC = () => {
         }
       }
 
-      // Sort by date (soonest first)
       reminderNotifications.sort((a, b) => a.daysUntil - b.daysUntil);
 
       setNotifications(reminderNotifications);
     } catch (error) {
-      setNotifications([]); // Set empty array on error
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -94,7 +88,6 @@ const NotificationsScreen: React.FC = () => {
     reminder: Reminder,
     car?: Car
   ): ReminderNotification | null => {
-    // Validate reminder
     if (!reminder || !reminder.id || !reminder.reminderDate) {
       return null;
     }
@@ -104,7 +97,6 @@ const NotificationsScreen: React.FC = () => {
     today.setHours(0, 0, 0, 0);
     reminderDate.setHours(0, 0, 0, 0);
 
-    // Check if date is valid
     if (isNaN(reminderDate.getTime())) {
       return null;
     }
@@ -265,7 +257,6 @@ const NotificationsScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        {/* Header */}
         <Animatable.View animation="fadeInDown" duration={800} style={styles.header}>
           <View style={styles.headerContent}>
             <View>
@@ -287,7 +278,6 @@ const NotificationsScreen: React.FC = () => {
           </View>
         </Animatable.View>
 
-        {/* Empty State */}
         {notifications.length === 0 && (
           <Animatable.View animation="fadeIn" duration={800} delay={200}>
             <Card style={[styles.emptyCard, { backgroundColor: theme.colors.surface }]}>
@@ -320,7 +310,6 @@ const NotificationsScreen: React.FC = () => {
           </Animatable.View>
         )}
 
-        {/* Reminder Notifications */}
         {notifications.map((notification, index) => {
           if (!notification || !notification.reminder) return null;
           
@@ -342,7 +331,6 @@ const NotificationsScreen: React.FC = () => {
                 onPress={() => handleViewReminder(notification)}
               >
                 <Card.Content>
-                  {/* Status Badge */}
                   <View style={styles.notificationHeader}>
                     <Chip
                       icon={getStatusIcon(notification.status)}
@@ -356,7 +344,6 @@ const NotificationsScreen: React.FC = () => {
                     </Chip>
                   </View>
 
-                  {/* Reminder Title */}
                   <Text
                     variant="titleMedium"
                     style={[styles.reminderTitle, { color: theme.colors.onSurface }]}
@@ -364,7 +351,6 @@ const NotificationsScreen: React.FC = () => {
                     {notification.reminder?.title || 'Untitled Reminder'}
                   </Text>
 
-                  {/* Car Information (if linked) */}
                   {notification.car && (
                     <View style={styles.carInfo}>
                       <MaterialCommunityIcons
@@ -381,7 +367,6 @@ const NotificationsScreen: React.FC = () => {
                     </View>
                   )}
 
-                  {/* Description */}
                   {notification.reminder?.description && (
                     <Text
                       variant="bodyMedium"
@@ -392,7 +377,6 @@ const NotificationsScreen: React.FC = () => {
                     </Text>
                   )}
 
-                  {/* Date & Time */}
                   {notification.reminder?.reminderDate && (
                     <View style={styles.dateTimeRow}>
                       <View style={styles.dateTimeItem}>
@@ -425,7 +409,6 @@ const NotificationsScreen: React.FC = () => {
                     </View>
                   )}
 
-                  {/* Status Message */}
                   <View style={[styles.messageBox, { backgroundColor: getStatusColor(notification.status) + '10' }]}>
                     <Text
                       variant="bodyMedium"
@@ -435,7 +418,6 @@ const NotificationsScreen: React.FC = () => {
                     </Text>
                   </View>
 
-                  {/* Action Buttons */}
                   <View style={styles.actions}>
                     <Button
                       mode="outlined"
@@ -463,7 +445,6 @@ const NotificationsScreen: React.FC = () => {
           );
         })}
 
-        {/* Info Card */}
         {notifications.length > 0 && (
           <Animatable.View animation="fadeIn" duration={800} delay={notifications.length * 100 + 400}>
             <Card style={[styles.infoCard, { backgroundColor: theme.colors.primaryContainer }]}>
@@ -487,7 +468,6 @@ const NotificationsScreen: React.FC = () => {
         )}
       </ScrollView>
 
-      {/* Floating Action Button */}
       <FAB
         icon="plus"
         onPress={handleAddReminder}

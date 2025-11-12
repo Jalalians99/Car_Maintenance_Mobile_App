@@ -210,11 +210,9 @@ export type RootStackParamList = {
   // Other
   Profile: undefined;
   Settings: undefined;
-  QRCodeScanner: undefined;
-  ServiceStations: { location?: Location };
+  WorkshopFinder: undefined;
   Notifications: undefined;
   Export: undefined;
-  Camera: { type: 'car' | 'maintenance' | 'oil_change'; id?: string };
 };
 
 export type TabParamList = {

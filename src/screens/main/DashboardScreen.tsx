@@ -83,6 +83,10 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
     navigation.navigate('Notifications');
   };
 
+  const handleFindWorkshops = () => {
+    navigation.navigate('WorkshopFinder');
+  };
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good Morning';
@@ -287,6 +291,22 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                     />
                     <Text variant="bodyMedium" style={[styles.actionText, { color: theme.colors.onSurface }]}>
                       View Cars
+                    </Text>
+                  </Card.Content>
+                </Card>
+
+                <Card 
+                  style={styles.actionCard} 
+                  onPress={handleFindWorkshops}
+                >
+                  <Card.Content style={styles.actionContent}>
+                    <MaterialCommunityIcons 
+                      name="map-marker-radius" 
+                      size={32} 
+                      color={theme.colors.primary} 
+                    />
+                    <Text variant="bodyMedium" style={[styles.actionText, { color: theme.colors.onSurface }]}>
+                      Find Hedin
                     </Text>
                   </Card.Content>
                 </Card>

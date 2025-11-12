@@ -193,4 +193,3 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
   },
 });
-

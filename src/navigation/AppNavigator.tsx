@@ -7,57 +7,46 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList, TabParamList } from '../types';
 
-// Auth Screens
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 
-// Main App Screens
 import DashboardScreen from '../screens/main/DashboardScreen';
 import CarsScreen from '../screens/main/CarsScreen';
 import { MaintenanceListScreen as MaintenanceTabScreen } from '../screens/main/MaintenanceListScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
 
-// Car Screens
 import CarDetailsScreen from '../screens/cars/CarDetailsScreen';
 import AddCarScreen from '../screens/cars/AddCarScreen';
 import EditCarScreen from '../screens/cars/EditCarScreen';
 import CarPhotosScreen from '../screens/cars/CarPhotosScreen';
 
-// Maintenance Screens
 import { AddMaintenanceScreen } from '../screens/maintenance/AddMaintenanceScreen';
 import { EditMaintenanceScreen } from '../screens/maintenance/EditMaintenanceScreen';
 import { CarMaintenanceRecordsScreen } from '../screens/maintenance/CarMaintenanceRecordsScreen';
 import { MaintenanceDetailsScreen } from '../screens/maintenance/MaintenanceDetailsScreen';
 
-// Oil Change Screens
 import OilChangeListScreen from '../screens/oilchange/OilChangeListScreen';
 import AddOilChangeScreen from '../screens/oilchange/AddOilChangeScreen';
 import EditOilChangeScreen from '../screens/oilchange/EditOilChangeScreen';
 import OilChangeDetailsScreen from '../screens/oilchange/OilChangeDetailsScreen';
 
-// Reminder Screens
 import { ManageRemindersScreen } from '../screens/reminders/ManageRemindersScreen';
 import { AddReminderScreen } from '../screens/reminders/AddReminderScreen';
 import { EditReminderScreen } from '../screens/reminders/EditReminderScreen';
 
-// Other Screens
 import SettingsScreen from '../screens/other/SettingsScreen';
-import QRCodeScannerScreen from '../screens/other/QRCodeScannerScreen';
-import ServiceStationsScreen from '../screens/other/ServiceStationsScreen';
+import WorkshopFinderScreen from '../screens/other/WorkshopFinderScreen';
 import NotificationsScreen from '../screens/other/NotificationsScreen';
 import ExportScreen from '../screens/other/ExportScreen';
-import CameraScreen from '../screens/other/CameraScreen';
 
-// Icons
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
-// Loading Screen Component
 const LoadingScreen = () => {
   const theme = useTheme();
   return (
@@ -72,7 +61,6 @@ const LoadingScreen = () => {
   );
 };
 
-// Main Tab Navigator
 const TabNavigator = () => {
   const theme = useTheme();
   
@@ -137,7 +125,6 @@ const TabNavigator = () => {
   );
 };
 
-// Auth Stack Navigator
 const AuthNavigator = () => {
   return (
     <Stack.Navigator
@@ -153,7 +140,6 @@ const AuthNavigator = () => {
   );
 };
 
-// Main App Navigator
 const AppNavigator = () => {
   const theme = useTheme();
   
@@ -175,7 +161,6 @@ const AppNavigator = () => {
         options={{ headerShown: false }}
       />
       
-      {/* Car Screens */}
       <Stack.Screen 
         name="CarDetails" 
         component={CarDetailsScreen} 
@@ -197,7 +182,6 @@ const AppNavigator = () => {
         options={{ title: 'Car Photos' }}
       />
       
-      {/* Maintenance Screens */}
       <Stack.Screen 
         name="MaintenanceList" 
         component={CarMaintenanceRecordsScreen} 
@@ -219,7 +203,6 @@ const AppNavigator = () => {
         options={{ title: 'Maintenance Details' }}
       />
       
-      {/* Oil Change Screens */}
       <Stack.Screen 
         name="OilChangeList" 
         component={OilChangeListScreen} 
@@ -241,7 +224,6 @@ const AppNavigator = () => {
         options={{ title: 'Oil Change Details' }}
       />
       
-      {/* Reminder Screens */}
       <Stack.Screen 
         name="ManageReminders" 
         component={ManageRemindersScreen} 
@@ -258,21 +240,15 @@ const AppNavigator = () => {
         options={{ title: 'Edit Reminder' }}
       />
       
-      {/* Other Screens */}
       <Stack.Screen 
         name="Settings" 
         component={SettingsScreen} 
         options={{ title: 'Settings' }}
       />
       <Stack.Screen 
-        name="QRCodeScanner" 
-        component={QRCodeScannerScreen} 
-        options={{ title: 'Scan QR Code' }}
-      />
-      <Stack.Screen 
-        name="ServiceStations" 
-        component={ServiceStationsScreen} 
-        options={{ title: 'Service Stations' }}
+        name="WorkshopFinder" 
+        component={WorkshopFinderScreen} 
+        options={{ title: 'Find Hedin Automotive' }}
       />
       <Stack.Screen 
         name="Notifications" 
@@ -284,19 +260,10 @@ const AppNavigator = () => {
         component={ExportScreen} 
         options={{ title: 'Export Data' }}
       />
-      <Stack.Screen 
-        name="Camera" 
-        component={CameraScreen} 
-        options={{ 
-          title: 'Camera',
-          headerShown: false,
-        }}
-      />
     </Stack.Navigator>
   );
 };
 
-// Root Navigator
 const RootNavigator = () => {
   const { user, loading } = useAuth();
 

@@ -20,12 +20,8 @@ import { firestore } from '../config/firebase';
 import { Car, MaintenanceRecord, OilChangeRecord, Notification, SearchFilters, MaintenanceFilters, Reminder } from '../types';
 
 export class DatabaseService {
-  // === CAR OPERATIONS ===
-  
-  // Add new car
   static async addCar(carData: Omit<Car, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
-      // Filter out undefined values for Firestore
       const cleanedData: any = {};
       Object.entries(carData).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -45,7 +41,6 @@ export class DatabaseService {
     }
   }
 
-  // Get user's cars
   static async getUserCars(userId: string): Promise<Car[]> {
     try {
       const q = query(
@@ -73,7 +68,6 @@ export class DatabaseService {
     }
   }
 
-  // Get single car
   static async getCar(carId: string): Promise<Car | null> {
     try {
       const docRef = doc(firestore, 'cars', carId);
@@ -93,10 +87,8 @@ export class DatabaseService {
     }
   }
 
-  // Update car
   static async updateCar(carId: string, updates: Partial<Car>): Promise<void> {
     try {
-      // Filter out undefined values
       const cleanedUpdates: any = {};
       Object.entries(updates).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -114,7 +106,6 @@ export class DatabaseService {
     }
   }
 
-  // Delete car
   static async deleteCar(carId: string): Promise<void> {
     try {
       await deleteDoc(doc(firestore, 'cars', carId));
@@ -123,7 +114,6 @@ export class DatabaseService {
     }
   }
 
-  // Search cars
   static async searchCars(userId: string, filters: SearchFilters): Promise<Car[]> {
     try {
       let q = query(
@@ -131,7 +121,6 @@ export class DatabaseService {
         where('ownerId', '==', userId)
       );
 
-      // Apply filters
       if (filters.make) {
         q = query(q, where('make', '==', filters.make));
       }
@@ -150,7 +139,6 @@ export class DatabaseService {
       
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        // Additional filtering for ranges
         if (filters.minYear && data.year < filters.minYear) return;
         if (filters.maxYear && data.year > filters.maxYear) return;
         
@@ -168,12 +156,8 @@ export class DatabaseService {
     }
   }
 
-  // === MAINTENANCE OPERATIONS ===
-  
-  // Add maintenance record
   static async addMaintenanceRecord(maintenanceData: Omit<MaintenanceRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
-      // Filter out undefined values for Firestore
       const cleanedData: any = {};
       Object.entries(maintenanceData).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -193,7 +177,6 @@ export class DatabaseService {
     }
   }
 
-  // Get car's maintenance records
   static async getCarMaintenanceRecords(carId: string): Promise<MaintenanceRecord[]> {
     try {
       const q = query(
@@ -221,7 +204,6 @@ export class DatabaseService {
     }
   }
 
-  // Get single maintenance record
   static async getMaintenanceRecord(recordId: string): Promise<MaintenanceRecord | null> {
     try {
       const docRef = doc(firestore, 'maintenance', recordId);
@@ -241,10 +223,8 @@ export class DatabaseService {
     }
   }
 
-  // Update maintenance record
   static async updateMaintenanceRecord(recordId: string, updates: Partial<MaintenanceRecord>): Promise<void> {
     try {
-      // Filter out undefined values
       const cleanedUpdates: any = {};
       Object.entries(updates).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -262,7 +242,6 @@ export class DatabaseService {
     }
   }
 
-  // Delete maintenance record
   static async deleteMaintenanceRecord(recordId: string): Promise<void> {
     try {
       await deleteDoc(doc(firestore, 'maintenance', recordId));
@@ -271,9 +250,6 @@ export class DatabaseService {
     }
   }
 
-  // === OIL CHANGE OPERATIONS ===
-  
-  // Add oil change record
   static async addOilChangeRecord(oilChangeData: Omit<OilChangeRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
       const docRef = await addDoc(collection(firestore, 'oilChanges'), {
@@ -287,7 +263,6 @@ export class DatabaseService {
     }
   }
 
-  // Get car's oil change records
   static async getCarOilChangeRecords(carId: string): Promise<OilChangeRecord[]> {
     try {
       const q = query(
@@ -315,7 +290,6 @@ export class DatabaseService {
     }
   }
 
-  // Update oil change record
   static async updateOilChangeRecord(recordId: string, updates: Partial<OilChangeRecord>): Promise<void> {
     try {
       const recordRef = doc(firestore, 'oilChanges', recordId);
@@ -328,7 +302,6 @@ export class DatabaseService {
     }
   }
 
-  // Delete oil change record
   static async deleteOilChangeRecord(recordId: string): Promise<void> {
     try {
       await deleteDoc(doc(firestore, 'oilChanges', recordId));
@@ -337,9 +310,6 @@ export class DatabaseService {
     }
   }
 
-  // === NOTIFICATION OPERATIONS ===
-  
-  // Add notification
   static async addNotification(notificationData: Omit<Notification, 'id' | 'createdAt'>): Promise<string> {
     try {
       const docRef = await addDoc(collection(firestore, 'notifications'), {
@@ -352,7 +322,6 @@ export class DatabaseService {
     }
   }
 
-  // Get user notifications
   static async getUserNotifications(userId: string): Promise<Notification[]> {
     try {
       const q = query(
@@ -380,7 +349,6 @@ export class DatabaseService {
     }
   }
 
-  // Mark notification as read
   static async markNotificationAsRead(notificationId: string): Promise<void> {
     try {
       const notificationRef = doc(firestore, 'notifications', notificationId);
@@ -392,7 +360,6 @@ export class DatabaseService {
     }
   }
 
-  // Delete notification
   static async deleteNotification(notificationId: string): Promise<void> {
     try {
       await deleteDoc(doc(firestore, 'notifications', notificationId));
@@ -401,9 +368,6 @@ export class DatabaseService {
     }
   }
 
-  // === ANALYTICS AND STATISTICS ===
-  
-  // Get dashboard statistics
   static async getDashboardStats(userId: string): Promise<{
     totalCars: number;
     totalMaintenanceRecords: number;
@@ -412,7 +376,6 @@ export class DatabaseService {
     upcomingMaintenance: number;
   }> {
     try {
-      // Fetch data with individual error handling
       let cars: Car[] = [];
       let maintenance: MaintenanceRecord[] = [];
       let oilChanges: OilChangeRecord[] = [];
@@ -420,19 +383,19 @@ export class DatabaseService {
       try {
         cars = await this.getUserCars(userId);
       } catch (error) {
-        // Continue with empty array
+        
       }
 
       try {
         maintenance = await this.getUserMaintenanceRecords(userId);
       } catch (error) {
-        // Continue with empty array
+        
       }
 
       try {
         oilChanges = await this.getUserOilChangeRecords(userId);
       } catch (error) {
-        // Continue with empty array
+        
       }
 
       const totalMaintenanceCost = maintenance.reduce((sum, record) => sum + (record.cost || 0), 0) +
@@ -459,7 +422,6 @@ export class DatabaseService {
     }
   }
 
-  // Get all user maintenance records
   private static async getUserMaintenanceRecords(userId: string): Promise<MaintenanceRecord[]> {
     try {
       const cars = await this.getUserCars(userId);
@@ -494,7 +456,6 @@ export class DatabaseService {
     }
   }
 
-  // Get all user oil change records
   private static async getUserOilChangeRecords(userId: string): Promise<OilChangeRecord[]> {
     try {
       const cars = await this.getUserCars(userId);
@@ -529,12 +490,8 @@ export class DatabaseService {
     }
   }
 
-  // === REMINDER OPERATIONS ===
-
-  // Add new reminder
   static async addReminder(reminderData: Omit<Reminder, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
-      // Filter out undefined values
       const cleanedData: any = {};
       Object.entries(reminderData).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -554,7 +511,6 @@ export class DatabaseService {
     }
   }
 
-  // Get user's reminders
   static async getUserReminders(userId: string): Promise<Reminder[]> {
     try {
       const q = query(
@@ -582,7 +538,6 @@ export class DatabaseService {
     }
   }
 
-  // Get single reminder
   static async getReminder(reminderId: string): Promise<Reminder | null> {
     try {
       const docRef = doc(firestore, 'reminders', reminderId);
@@ -602,10 +557,8 @@ export class DatabaseService {
     }
   }
 
-  // Update reminder
   static async updateReminder(reminderId: string, updates: Partial<Reminder>): Promise<void> {
     try {
-      // Filter out undefined values
       const cleanedUpdates: any = {};
       Object.entries(updates).forEach(([key, value]) => {
         if (value !== undefined) {
@@ -623,7 +576,6 @@ export class DatabaseService {
     }
   }
 
-  // Delete reminder
   static async deleteReminder(reminderId: string): Promise<void> {
     try {
       const reminderRef = doc(firestore, 'reminders', reminderId);
@@ -633,7 +585,6 @@ export class DatabaseService {
     }
   }
 
-  // Get reminders for a specific car
   static async getCarReminders(carId: string): Promise<Reminder[]> {
     try {
       const q = query(
@@ -662,7 +613,6 @@ export class DatabaseService {
     }
   }
 
-  // Get pending reminders (for notifications)
   static async getPendingReminders(userId: string): Promise<Reminder[]> {
     try {
       const q = query(

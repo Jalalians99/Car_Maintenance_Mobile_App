@@ -51,7 +51,7 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
       const userReminders = await DatabaseService.getUserReminders(user.id);
       setReminders(userReminders);
     } catch (error) {
-      // Error loading reminders
+      
     } finally {
       setLoading(false);
     }
@@ -178,11 +178,9 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
 
   const filteredReminders = reminders
     .filter((reminder) => {
-      // Filter by status
       if (filterStatus === 'pending' && reminder.status !== 'pending') return false;
       if (filterStatus === 'completed' && reminder.status !== 'completed') return false;
 
-      // Filter by search query
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
         return (
@@ -195,7 +193,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
       return true;
     })
     .sort((a, b) => {
-      // Sort by date
       return new Date(a.reminderDate).getTime() - new Date(b.reminderDate).getTime();
     });
 
@@ -218,7 +215,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        {/* Header */}
         <Animatable.View animation="fadeInDown" duration={800} style={styles.header}>
           <View style={styles.headerContent}>
             <MaterialCommunityIcons name="format-list-checks" size={32} color={theme.colors.primary} />
@@ -231,7 +227,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
         </Animatable.View>
 
-        {/* Search Bar */}
         <Animatable.View animation="fadeIn" duration={800} delay={200}>
           <Searchbar
             placeholder="Search reminders..."
@@ -241,7 +236,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
           />
         </Animatable.View>
 
-        {/* Filter Buttons */}
         <Animatable.View animation="fadeIn" duration={800} delay={300}>
           <SegmentedButtons
             value={filterStatus}
@@ -255,7 +249,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
           />
         </Animatable.View>
 
-        {/* Reminders List */}
         {filteredReminders.length === 0 ? (
           <Animatable.View animation="fadeIn" duration={800} delay={400}>
             <Card style={styles.emptyCard}>
@@ -286,7 +279,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
               >
                 <Card style={[styles.reminderCard, { borderLeftWidth: 4, borderLeftColor: statusColor }]}>
                   <Card.Content>
-                    {/* Header */}
                     <View style={styles.cardHeader}>
                       <View style={styles.typeIconContainer}>
                         <MaterialCommunityIcons
@@ -339,14 +331,12 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
                       </View>
                     </View>
 
-                    {/* Description */}
                     {reminder.description && (
                       <Text variant="bodySmall" style={{ color: theme.colors.onSurfaceVariant, marginTop: 8 }}>
                         {reminder.description}
                       </Text>
                     )}
 
-                    {/* Details */}
                     <View style={styles.detailsContainer}>
                       <View style={styles.detailRow}>
                         <MaterialCommunityIcons name="calendar" size={16} color={theme.colors.onSurfaceVariant} />
@@ -380,7 +370,6 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
         )}
       </ScrollView>
 
-      {/* FAB */}
       <FAB
         icon="plus"
         label="Add Reminder"

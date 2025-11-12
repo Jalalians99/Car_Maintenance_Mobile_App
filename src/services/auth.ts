@@ -14,7 +14,6 @@ import { auth, firestore } from '../config/firebase';
 import { User } from '../types';
 
 export class AuthService {
-  // Register new user
   static async register(
     email: string,
     password: string,
@@ -27,16 +26,13 @@ export class AuthService {
     }
   ): Promise<User> {
     try {
-      // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
-      // Update display name
       await updateProfile(firebaseUser, {
         displayName: `${userData.firstName} ${userData.lastName}`,
       });
 
-      // Create user document in Firestore
       const user: User = {
         id: firebaseUser.uid,
         username: userData.username,
@@ -50,7 +46,6 @@ export class AuthService {
         updatedAt: new Date().toISOString(),
       };
 
-      // Remove undefined fields for Firestore (Firestore doesn't accept undefined values)
       const firestoreData: any = {
         id: user.id,
         username: user.username,
@@ -62,7 +57,6 @@ export class AuthService {
         updatedAt: serverTimestamp(),
       };
 
-      // Only add optional fields if they have values
       if (userData.phoneNumber) {
         firestoreData.phoneNumber = userData.phoneNumber;
       }
@@ -78,13 +72,11 @@ export class AuthService {
     }
   }
 
-  // Sign in user
   static async signIn(email: string, password: string): Promise<User> {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
-      // Get user data from Firestore
       const userDoc = await getDoc(doc(firestore, 'users', firebaseUser.uid));
       
       if (!userDoc.exists()) {
@@ -103,7 +95,6 @@ export class AuthService {
     }
   }
 
-  // Sign out user
   static async signOut(): Promise<void> {
     try {
       await signOut(auth);
@@ -112,7 +103,6 @@ export class AuthService {
     }
   }
 
-  // Send password reset email
   static async resetPassword(email: string): Promise<void> {
     try {
       await sendPasswordResetEmail(auth, email);
@@ -121,7 +111,6 @@ export class AuthService {
     }
   }
 
-  // Get current user data
   static async getCurrentUser(): Promise<User | null> {
     try {
       const firebaseUser = auth.currentUser;
@@ -143,7 +132,6 @@ export class AuthService {
     }
   }
 
-  // Update user profile
   static async updateProfile(userId: string, updates: Partial<User>): Promise<void> {
     try {
       const userRef = doc(firestore, 'users', userId);
@@ -152,7 +140,6 @@ export class AuthService {
         updatedAt: serverTimestamp(),
       });
 
-      // Update Firebase Auth profile if display name changed
       const firebaseUser = auth.currentUser;
       if (firebaseUser && (updates.firstName || updates.lastName)) {
         await updateProfile(firebaseUser, {
@@ -164,7 +151,6 @@ export class AuthService {
     }
   }
 
-  // Update email
   static async updateUserEmail(newEmail: string): Promise<void> {
     try {
       const firebaseUser = auth.currentUser;
@@ -172,7 +158,6 @@ export class AuthService {
 
       await updateEmail(firebaseUser, newEmail);
       
-      // Update email in Firestore
       const userRef = doc(firestore, 'users', firebaseUser.uid);
       await updateDoc(userRef, {
         email: newEmail.toLowerCase(),
@@ -183,7 +168,6 @@ export class AuthService {
     }
   }
 
-  // Update password
   static async updateUserPassword(newPassword: string): Promise<void> {
     try {
       const firebaseUser = auth.currentUser;
@@ -195,23 +179,18 @@ export class AuthService {
     }
   }
 
-  // Delete user account
   static async deleteAccount(): Promise<void> {
     try {
       const firebaseUser = auth.currentUser;
       if (!firebaseUser) throw new Error('No authenticated user');
 
-      // Delete user document from Firestore
       await deleteDoc(doc(firestore, 'users', firebaseUser.uid));
-      
-      // Delete Firebase Auth user
       await deleteUser(firebaseUser);
     } catch (error: any) {
       throw new Error('Failed to delete account');
     }
   }
 
-  // Helper method to get user-friendly error messages
   private static getErrorMessage(errorCode: string, originalMessage?: string): string {
     switch (errorCode) {
       case 'auth/user-not-found':
@@ -240,7 +219,6 @@ export class AuthService {
       case 'invalid-argument':
         return 'Invalid data provided. Please check all required fields';
       default:
-        // Include the original error message for debugging
         const debugInfo = originalMessage ? ` (${originalMessage})` : '';
         return `An unexpected error occurred. Please try again${debugInfo}`;
     }
