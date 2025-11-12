@@ -62,7 +62,10 @@ src/
 └── utils/           # Helper functions and utilities
 ```
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> c38733e468c812127a7f6582e94fb4ab883c1c08
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -201,4 +204,10 @@ Created as a final project for Mobile Programming Course to demonstrate:
 - Firebase integration expertise
 - Modern UI/UX design principles
 - Professional code organization
+<<<<<<< HEAD
 - Complex application architecture
+=======
+- Complex application architecture
+
+# Car_Maintenance_Mobile_App
+>>>>>>> c38733e468c812127a7f6582e94fb4ab883c1c08
