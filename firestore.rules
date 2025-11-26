@@ -39,7 +39,7 @@ service cloud.firestore {
       allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
     }
     
-    // Notifications (if you use them)
+    // Notifications collection
     match /notifications/{notificationId} {
       allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
       allow create: if request.auth != null;

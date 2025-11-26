@@ -106,6 +106,36 @@ export class DatabaseService {
     }
   }
 
+  static async addCarImage(carId: string, imageUrl: string): Promise<void> {
+    try {
+      const carRef = doc(firestore, 'cars', carId);
+      const car = await this.getCar(carId);
+      const updatedImages = [...(car.imageUrls || []), imageUrl];
+      
+      await updateDoc(carRef, {
+        imageUrls: updatedImages,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error: any) {
+      throw new Error(`Failed to add car image: ${error.message || 'Unknown error'}`);
+    }
+  }
+
+  static async removeCarImage(carId: string, imageUrl: string): Promise<void> {
+    try {
+      const carRef = doc(firestore, 'cars', carId);
+      const car = await this.getCar(carId);
+      const updatedImages = (car.imageUrls || []).filter(url => url !== imageUrl);
+      
+      await updateDoc(carRef, {
+        imageUrls: updatedImages,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error: any) {
+      throw new Error(`Failed to remove car image: ${error.message || 'Unknown error'}`);
+    }
+  }
+
   static async deleteCar(carId: string): Promise<void> {
     try {
       await deleteDoc(doc(firestore, 'cars', carId));

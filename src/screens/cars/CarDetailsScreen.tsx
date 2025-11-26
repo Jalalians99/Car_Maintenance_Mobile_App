@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Image, TouchableOpacity } from 'react-native';
 import {
   Text,
   useTheme,
@@ -10,6 +10,7 @@ import {
   Divider,
   Dialog,
   Portal,
+  ActivityIndicator,
 } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -17,6 +18,7 @@ import { RouteProp } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { RootStackParamList, Car, MaintenanceRecord } from '../../types';
 import { DatabaseService } from '../../services/database';
+import { ImageUploadService } from '../../services/imageUpload';
 import * as Animatable from 'react-native-animatable';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -42,6 +44,10 @@ const CarDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
   const [deleteMaintenanceDialogVisible, setDeleteMaintenanceDialogVisible] = useState(false);
   const [selectedMaintenanceId, setSelectedMaintenanceId] = useState<string | null>(null);
   const [deletingMaintenance, setDeletingMaintenance] = useState(false);
+  
+  // Image management
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [deletingImage, setDeletingImage] = useState<string | null>(null);
 
   useEffect(() => {
     loadCarDetails();
@@ -96,6 +102,84 @@ const CarDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       setDeleting(false);
       setDeleteDialogVisible(false);
     }
+  };
+
+  const handleAddImage = () => {
+    ImageUploadService.showImageSourceDialog(
+      handleTakePhoto,
+      handlePickFromGallery
+    );
+  };
+
+  const handleTakePhoto = async () => {
+    try {
+      setUploadingImage(true);
+      const imageUri = await ImageUploadService.takePhoto();
+      
+      if (!imageUri) {
+        setUploadingImage(false);
+        return;
+      }
+
+      const downloadURL = await ImageUploadService.uploadCarImage(carId, imageUri);
+      await DatabaseService.addCarImage(carId, downloadURL);
+      
+      await loadCarDetails();
+      Alert.alert('Success', 'Photo added successfully!');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to add photo');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handlePickFromGallery = async () => {
+    try {
+      setUploadingImage(true);
+      const imageUri = await ImageUploadService.pickImage();
+      
+      if (!imageUri) {
+        setUploadingImage(false);
+        return;
+      }
+
+      const downloadURL = await ImageUploadService.uploadCarImage(carId, imageUri);
+      await DatabaseService.addCarImage(carId, downloadURL);
+      
+      await loadCarDetails();
+      Alert.alert('Success', 'Photo added successfully!');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to add photo');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleDeleteImage = (imageUrl: string) => {
+    Alert.alert(
+      'Delete Photo',
+      'Are you sure you want to delete this photo?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setDeletingImage(imageUrl);
+              await DatabaseService.removeCarImage(carId, imageUrl);
+              await ImageUploadService.deleteCarImage(imageUrl);
+              await loadCarDetails();
+              Alert.alert('Success', 'Photo deleted successfully!');
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'Failed to delete photo');
+            } finally {
+              setDeletingImage(null);
+            }
+          },
+        },
+      ]
+    );
   };
   
   const handleAddMaintenance = () => {
@@ -203,6 +287,68 @@ const CarDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
               Delete
             </Button>
           </View>
+        </Animatable.View>
+
+        {/* Car Photos */}
+        <Animatable.View animation="fadeInUp" duration={800} delay={150}>
+          <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
+            <Card.Content>
+              <View style={styles.sectionHeader}>
+                <Text variant="titleLarge" style={[styles.sectionTitle, { color: theme.colors.onSurface }]}>
+                  Car Photos
+                </Text>
+                <Button
+                  mode="contained"
+                  icon="camera-plus"
+                  onPress={handleAddImage}
+                  disabled={uploadingImage}
+                  loading={uploadingImage}
+                  compact
+                >
+                  Add Photo
+                </Button>
+              </View>
+
+              {car.imageUrls && car.imageUrls.length > 0 ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
+                  {car.imageUrls.map((imageUrl, index) => (
+                    <View key={index} style={styles.imageContainer}>
+                      <Image 
+                        source={{ uri: imageUrl }} 
+                        style={styles.carImage}
+                        resizeMode="cover"
+                      />
+                      <TouchableOpacity
+                        style={[styles.deleteImageButton, { backgroundColor: theme.colors.error }]}
+                        onPress={() => handleDeleteImage(imageUrl)}
+                        disabled={deletingImage === imageUrl}
+                      >
+                        {deletingImage === imageUrl ? (
+                          <ActivityIndicator size="small" color="white" />
+                        ) : (
+                          <MaterialCommunityIcons name="delete" size={20} color="white" />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              ) : (
+                <View style={styles.noPhotosContainer}>
+                  <MaterialCommunityIcons 
+                    name="camera-off" 
+                    size={48} 
+                    color={theme.colors.onSurfaceVariant} 
+                  />
+                  <Text 
+                    variant="bodyMedium" 
+                    style={[styles.noPhotosText, { color: theme.colors.onSurfaceVariant }]}
+                  >
+                    No photos yet. Add your first photo!
+                  </Text>
+                </View>
+              )}
+            </Card.Content>
+          </Card>
         </Animatable.View>
 
         {/* Basic Information */}
@@ -646,6 +792,42 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
+  },
+  imageScroll: {
+    marginTop: 8,
+  },
+  imageContainer: {
+    marginRight: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  carImage: {
+    width: 200,
+    height: 150,
+    borderRadius: 12,
+  },
+  deleteImageButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
+  noPhotosContainer: {
+    alignItems: 'center',
+    paddingVertical: 32,
+  },
+  noPhotosText: {
+    marginTop: 12,
+    textAlign: 'center',
   },
   emptyState: {
     alignItems: 'center',

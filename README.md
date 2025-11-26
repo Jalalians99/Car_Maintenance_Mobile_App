@@ -6,7 +6,7 @@ A comprehensive React Native mobile application for managing car maintenance rec
 
 ### Core Functionality
 - **Multi-car Management**: Add, edit, and track multiple vehicles
-- **Maintenance Records**: Detailed maintenance history with photos and receipts
+- **Maintenance Records**: Detailed maintenance history
 - **Oil Change Tracking**: Specialized oil change monitoring with intervals
 - **Smart Reminders**: Push notifications for upcoming maintenance
 - **Analytics Dashboard**: Visual insights into maintenance costs and patterns
@@ -14,13 +14,11 @@ A comprehensive React Native mobile application for managing car maintenance rec
 ### Advanced Features
 - **Firebase Authentication**: Secure user registration and login (Email or Username)
 - **Cloud Sync**: Real-time data synchronization across devices
-- **Camera Integration**: Photo capture for maintenance records
 - **Location Services**: Find Hedin Automotive workshops with Google Maps
 - **Export Functionality**: PDF and CSV data exports
 - **Dark Mode**: System-wide theme switching
 
 ### Device APIs Used
-- **Camera**: Photo capture for cars and maintenance records
 - **Location**: GPS for workshop finder
 - **File System**: Local storage and exports
 - **AsyncStorage**: Persistent data storage

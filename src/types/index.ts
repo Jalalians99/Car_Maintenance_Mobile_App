@@ -64,7 +64,7 @@ export interface MaintenanceRecord {
   description: string;
   performedBy?: string;
   cost?: number;
-  category?: MaintenanceCategory; // Optional - not in web app
+  category?: MaintenanceCategory;
   imageUrls: string[];
   location?: Location;
   nextDueDate?: string;
@@ -89,7 +89,7 @@ export type MaintenanceCategory =
 export interface Reminder {
   id: string;
   userId: string;
-  carId?: string; // Optional - reminder can be car-specific or general
+  carId?: string;
   car?: Car;
   title: string;
   description?: string;
