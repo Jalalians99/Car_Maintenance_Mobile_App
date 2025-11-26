@@ -151,16 +151,6 @@ const ProfileScreen: React.FC = () => {
                 App Settings
               </Text>
 
-              <List.Item
-                title="Notifications"
-                description="Manage notification preferences"
-                left={props => <List.Icon {...props} icon="bell" />}
-                right={props => <List.Icon {...props} icon="chevron-right" />}
-                onPress={() => Alert.alert('Coming Soon', 'Notification settings will be available soon')}
-                titleStyle={{ color: theme.colors.onSurface }}
-                descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
-              />
-              <Divider />
 
               <List.Item
                 title="Dark Mode"
@@ -178,15 +168,6 @@ const ProfileScreen: React.FC = () => {
               />
               <Divider />
 
-              <List.Item
-                title="Export Data"
-                description="Export your data to PDF/CSV"
-                left={props => <List.Icon {...props} icon="download" />}
-                right={props => <List.Icon {...props} icon="chevron-right" />}
-                onPress={() => Alert.alert('Coming Soon', 'Data export will be available soon')}
-                titleStyle={{ color: theme.colors.onSurface }}
-                descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
-              />
             </Card.Content>
           </Card>
         </Animatable.View>

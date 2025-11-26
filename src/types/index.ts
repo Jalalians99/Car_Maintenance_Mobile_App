@@ -113,26 +113,6 @@ export type ReminderType =
   | 'Car Wash'
   | 'Custom';
 
-// Oil Change Record Interface
-export interface OilChangeRecord {
-  id: string;
-  carId: string;
-  car?: Car;
-  changeDate: string;
-  mileage: number;
-  oilType: string;
-  filterChanged: boolean;
-  oilBrand?: string;
-  cost?: number;
-  performedBy?: string;
-  notes?: string;
-  imageUrls: string[];
-  location?: Location;
-  nextDueDate?: string;
-  nextDueMileage?: number;
-  createdAt: string;
-  updatedAt: string;
-}
 
 // Location Interface
 export interface Location {
@@ -188,19 +168,12 @@ export type RootStackParamList = {
   CarDetails: { carId: string };
   AddCar: undefined;
   EditCar: { carId: string };
-  CarPhotos: { carId: string };
   
   // Maintenance Stack
   MaintenanceList: { carId: string };
   AddMaintenance: { carId: string };
   EditMaintenance: { maintenanceId: string };
   MaintenanceDetails: { maintenanceId: string };
-  
-  // Oil Change Stack
-  OilChangeList: { carId: string };
-  AddOilChange: { carId: string };
-  EditOilChange: { oilChangeId: string };
-  OilChangeDetails: { oilChangeId: string };
   
   // Reminder Stack
   ManageReminders: undefined;
@@ -212,7 +185,6 @@ export type RootStackParamList = {
   Settings: undefined;
   WorkshopFinder: undefined;
   Notifications: undefined;
-  Export: undefined;
 };
 
 export type TabParamList = {
@@ -250,18 +222,6 @@ export interface MaintenanceFormData {
   nextDueMileage?: number;
 }
 
-export interface OilChangeFormData {
-  changeDate: string;
-  mileage: number;
-  oilType: string;
-  filterChanged: boolean;
-  oilBrand?: string;
-  cost?: number;
-  performedBy?: string;
-  notes?: string;
-  nextDueDate?: string;
-  nextDueMileage?: number;
-}
 
 // API Response Types
 export interface ApiResponse<T> {
@@ -306,7 +266,6 @@ export interface ExportData {
   user: User;
   cars: Car[];
   maintenanceRecords: MaintenanceRecord[];
-  oilChangeRecords: OilChangeRecord[];
   exportDate: string;
   format: 'JSON' | 'PDF' | 'CSV';
 }

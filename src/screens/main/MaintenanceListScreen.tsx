@@ -50,10 +50,8 @@ export const MaintenanceListScreen: React.FC<Props> = ({ navigation }) => {
     try {
       setLoading(true);
 
-      // Get all user's cars
       const carsData = await DatabaseService.getUserCars(user.id);
 
-      // Get maintenance record count for each car
       const carsWithCounts = await Promise.all(
         carsData.map(async (car) => {
           const records = await DatabaseService.getCarMaintenanceRecords(car.id);
@@ -66,7 +64,7 @@ export const MaintenanceListScreen: React.FC<Props> = ({ navigation }) => {
 
       setCars(carsWithCounts);
     } catch (error) {
-      // Error loading cars
+      // Silently handle error
     } finally {
       setLoading(false);
     }

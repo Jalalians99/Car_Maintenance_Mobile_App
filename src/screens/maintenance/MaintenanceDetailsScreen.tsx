@@ -60,7 +60,6 @@ export const MaintenanceDetailsScreen: React.FC<Props> = ({ navigation, route })
         setCar(carData);
       }
     } catch (error) {
-
       Alert.alert('Error', 'Failed to load maintenance details');
     } finally {
       setLoading(false);
@@ -82,7 +81,6 @@ export const MaintenanceDetailsScreen: React.FC<Props> = ({ navigation, route })
         },
       ]);
     } catch (error) {
-
       Alert.alert('Error', 'Failed to delete maintenance record');
     } finally {
       setDeleting(false);

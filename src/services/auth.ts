@@ -9,7 +9,7 @@ import {
   deleteUser,
   User as FirebaseUser,
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, firestore } from '../config/firebase';
 import { User } from '../types';
 
@@ -35,7 +35,7 @@ export class AuthService {
 
       const user: User = {
         id: firebaseUser.uid,
-        username: userData.username,
+        username: userData.username.toLowerCase(),
         email: email.toLowerCase(),
         firstName: userData.firstName,
         lastName: userData.lastName,
@@ -48,7 +48,7 @@ export class AuthService {
 
       const firestoreData: any = {
         id: user.id,
-        username: user.username,
+        username: user.username.toLowerCase(),
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -72,8 +72,24 @@ export class AuthService {
     }
   }
 
-  static async signIn(email: string, password: string): Promise<User> {
+  static async signIn(emailOrUsername: string, password: string): Promise<User> {
     try {
+      let email = emailOrUsername.trim();
+      
+      // Check if input is an email or username
+      const isEmail = email.includes('@');
+      
+      // If it's a username, find the associated email
+      if (!isEmail) {
+        const userEmail = await this.findEmailByUsername(email);
+        if (!userEmail) {
+          throw new Error('No user found with this username. Please try logging in with your email address instead.');
+        }
+        email = userEmail;
+      } else {
+        email = email.toLowerCase();
+      }
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
@@ -92,6 +108,33 @@ export class AuthService {
       } as User;
     } catch (error: any) {
       throw new Error(this.getErrorMessage(error.code, error.message));
+    }
+  }
+
+  private static async findEmailByUsername(username: string): Promise<string | null> {
+    try {
+      const usersRef = collection(firestore, 'users');
+      const usernameLower = username.toLowerCase();
+      
+      // Try lowercase first
+      let q = query(usersRef, where('username', '==', usernameLower));
+      let querySnapshot = await getDocs(q);
+      
+      // If not found, try original case (for backward compatibility)
+      if (querySnapshot.empty) {
+        q = query(usersRef, where('username', '==', username));
+        querySnapshot = await getDocs(q);
+      }
+      
+      if (querySnapshot.empty) {
+        return null;
+      }
+
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      return userData.email || null;
+    } catch (error) {
+      return null;
     }
   }
 
@@ -194,7 +237,7 @@ export class AuthService {
   private static getErrorMessage(errorCode: string, originalMessage?: string): string {
     switch (errorCode) {
       case 'auth/user-not-found':
-        return 'No user found with this email address';
+        return 'No user found with this email or username';
       case 'auth/wrong-password':
         return 'Incorrect password';
       case 'auth/email-already-in-use':
@@ -202,7 +245,7 @@ export class AuthService {
       case 'auth/weak-password':
         return 'Password should be at least 6 characters';
       case 'auth/invalid-email':
-        return 'Invalid email address';
+        return 'Invalid email or username';
       case 'auth/user-disabled':
         return 'This account has been disabled';
       case 'auth/too-many-requests':
@@ -210,7 +253,7 @@ export class AuthService {
       case 'auth/requires-recent-login':
         return 'Please sign in again to perform this action';
       case 'auth/invalid-credential':
-        return 'Invalid email or password';
+        return 'Invalid email/username or password';
       case 'auth/network-request-failed':
         return 'Network error. Please check your internet connection';
       case 'permission-denied':

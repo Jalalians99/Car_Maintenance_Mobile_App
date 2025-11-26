@@ -11,23 +11,19 @@ A comprehensive React Native mobile application for managing car maintenance rec
 - **Smart Reminders**: Push notifications for upcoming maintenance
 - **Analytics Dashboard**: Visual insights into maintenance costs and patterns
 
-### Advanced Features (Grade 5 Requirements)
-- **Firebase Authentication**: Secure user registration and login
+### Advanced Features
+- **Firebase Authentication**: Secure user registration and login (Email or Username)
 - **Cloud Sync**: Real-time data synchronization across devices
 - **Camera Integration**: Photo capture for maintenance records
-- **Location Services**: Find nearby service stations
-- **QR Code Scanner**: Quick parts and service lookup
+- **Location Services**: Find Hedin Automotive workshops with Google Maps
 - **Export Functionality**: PDF and CSV data exports
-- **Offline Support**: Work without internet connection
-- **Biometric Auth**: Fingerprint/Face ID security
+- **Dark Mode**: System-wide theme switching
 
 ### Device APIs Used
 - **Camera**: Photo capture for cars and maintenance records
-- **Location**: GPS for service station finder
-- **Push Notifications**: Maintenance reminders
-- **Calendar**: Schedule integration
+- **Location**: GPS for workshop finder
 - **File System**: Local storage and exports
-- **Secure Store**: Sensitive data protection
+- **AsyncStorage**: Persistent data storage
 
 ## 🛠 Technology Stack
 
@@ -55,17 +51,14 @@ src/
 │   ├── cars/        # Car management screens
 │   ├── maintenance/ # Maintenance tracking screens
 │   ├── oilchange/   # Oil change specific screens
-│   └── other/       # Utility screens (camera, scanner, etc.)
+│   ├── reminders/   # Reminder management screens
+│   └── other/       # Utility screens (settings, export, etc.)
 ├── services/        # API services and data layer
 ├── theme/           # Theme configuration and styling
 ├── types/           # TypeScript type definitions
 └── utils/           # Helper functions and utilities
 ```
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c38733e468c812127a7f6582e94fb4ab883c1c08
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -87,11 +80,15 @@ cd CarWorkshopMobile
 npm install
 ```
 
-3. Configure Firebase
-- Create a Firebase project
-- Enable Authentication, Firestore, and Storage
-- Download configuration file
-- Update `src/config/firebase.ts` with your credentials
+3. Setup Environment Variables
+```bash
+# Copy the example environment file
+cp .env.example .env
+```
+
+Then edit `.env` and add your actual API keys:
+- Google Maps API key (from Google Cloud Console)
+- Firebase configuration (from Firebase Console)
 
 4. Run the application
 ```bash
@@ -115,23 +112,30 @@ npm run web
 3. Add your configuration to `src/config/firebase.ts`
 
 ### Environment Variables
-Create a `.env` file in the root directory:
+Copy `.env.example` to `.env` and configure:
+```bash
+# Google Maps API Key
+EXPO_PUBLIC_GOOGLE_MAPS_API_KEY=your_key_here
+
+# Firebase Configuration
+EXPO_PUBLIC_FIREBASE_API_KEY=your_key_here
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
 ```
-FIREBASE_API_KEY=your_api_key
-FIREBASE_AUTH_DOMAIN=your_auth_domain
-FIREBASE_PROJECT_ID=your_project_id
-FIREBASE_STORAGE_BUCKET=your_storage_bucket
-FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-FIREBASE_APP_ID=your_app_id
-```
+
+**Note:** Never commit `.env` to version control. It's already in `.gitignore`.
 
 ## 📱 Key Features Implementation
 
 ### Authentication System
-- Email/password registration and login
+- Email or Username login
+- Email/password registration
 - Password reset functionality
 - Secure token management
-- Profile management
+- Profile management with username display
 
 ### Car Management
 - Add/edit/delete vehicles
@@ -159,43 +163,19 @@ The app follows Material Design 3 principles with:
 - Accessibility considerations
 - Animation guidelines
 
-## 🧪 Testing
-
-```bash
-# Run unit tests
-npm test
-
-# Run integration tests
-npm run test:integration
-
-# Run e2e tests
-npm run test:e2e
-```
-
 ## 📦 Building for Production
 
 ```bash
 # Build for Android
-npm run build:android
+expo build:android
 
-# Build for iOS
-npm run build:ios
+# Build for iOS  
+expo build:ios
 
-# Create universal build
-npm run build
+# Or use EAS Build
+eas build --platform android
+eas build --platform ios
 ```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👨‍💻 Developer
 
@@ -204,10 +184,4 @@ Created as a final project for Mobile Programming Course to demonstrate:
 - Firebase integration expertise
 - Modern UI/UX design principles
 - Professional code organization
-<<<<<<< HEAD
 - Complex application architecture
-=======
-- Complex application architecture
-
-# Car_Maintenance_Mobile_App
->>>>>>> c38733e468c812127a7f6582e94fb4ab883c1c08

@@ -59,7 +59,6 @@ export const AddMaintenanceScreen: React.FC<Props> = ({ navigation, route }) => 
         }
       }
     } catch (error) {
-
       Alert.alert('Error', 'Failed to load car details');
     } finally {
       setLoadingCar(false);

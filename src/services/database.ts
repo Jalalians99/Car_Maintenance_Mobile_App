@@ -17,7 +17,7 @@ import {
   DocumentData,
 } from 'firebase/firestore';
 import { firestore } from '../config/firebase';
-import { Car, MaintenanceRecord, OilChangeRecord, Notification, SearchFilters, MaintenanceFilters, Reminder } from '../types';
+import { Car, MaintenanceRecord, Notification, SearchFilters, MaintenanceFilters, Reminder } from '../types';
 
 export class DatabaseService {
   static async addCar(carData: Omit<Car, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
@@ -250,65 +250,6 @@ export class DatabaseService {
     }
   }
 
-  static async addOilChangeRecord(oilChangeData: Omit<OilChangeRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
-    try {
-      const docRef = await addDoc(collection(firestore, 'oilChanges'), {
-        ...oilChangeData,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-      return docRef.id;
-    } catch (error) {
-      throw new Error('Failed to add oil change record');
-    }
-  }
-
-  static async getCarOilChangeRecords(carId: string): Promise<OilChangeRecord[]> {
-    try {
-      const q = query(
-        collection(firestore, 'oilChanges'),
-        where('carId', '==', carId),
-        orderBy('changeDate', 'desc')
-      );
-      
-      const querySnapshot = await getDocs(q);
-      const records: OilChangeRecord[] = [];
-      
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        records.push({
-          ...data,
-          id: doc.id,
-          createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
-          updatedAt: data.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
-        } as OilChangeRecord);
-      });
-      
-      return records;
-    } catch (error) {
-      throw new Error('Failed to fetch oil change records');
-    }
-  }
-
-  static async updateOilChangeRecord(recordId: string, updates: Partial<OilChangeRecord>): Promise<void> {
-    try {
-      const recordRef = doc(firestore, 'oilChanges', recordId);
-      await updateDoc(recordRef, {
-        ...updates,
-        updatedAt: serverTimestamp(),
-      });
-    } catch (error) {
-      throw new Error('Failed to update oil change record');
-    }
-  }
-
-  static async deleteOilChangeRecord(recordId: string): Promise<void> {
-    try {
-      await deleteDoc(doc(firestore, 'oilChanges', recordId));
-    } catch (error) {
-      throw new Error('Failed to delete oil change record');
-    }
-  }
 
   static async addNotification(notificationData: Omit<Notification, 'id' | 'createdAt'>): Promise<string> {
     try {
@@ -371,35 +312,26 @@ export class DatabaseService {
   static async getDashboardStats(userId: string): Promise<{
     totalCars: number;
     totalMaintenanceRecords: number;
-    totalOilChanges: number;
     totalMaintenanceCost: number;
     upcomingMaintenance: number;
   }> {
     try {
       let cars: Car[] = [];
       let maintenance: MaintenanceRecord[] = [];
-      let oilChanges: OilChangeRecord[] = [];
 
       try {
         cars = await this.getUserCars(userId);
       } catch (error) {
-        
+        // Silently handle error
       }
 
       try {
         maintenance = await this.getUserMaintenanceRecords(userId);
       } catch (error) {
-        
+        // Silently handle error
       }
 
-      try {
-        oilChanges = await this.getUserOilChangeRecords(userId);
-      } catch (error) {
-        
-      }
-
-      const totalMaintenanceCost = maintenance.reduce((sum, record) => sum + (record.cost || 0), 0) +
-                                 oilChanges.reduce((sum, record) => sum + (record.cost || 0), 0);
+      const totalMaintenanceCost = maintenance.reduce((sum, record) => sum + (record.cost || 0), 0);
 
       const now = new Date();
       const oneMonthFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -413,7 +345,6 @@ export class DatabaseService {
       return {
         totalCars: cars.length,
         totalMaintenanceRecords: maintenance.length,
-        totalOilChanges: oilChanges.length,
         totalMaintenanceCost,
         upcomingMaintenance,
       };
@@ -456,39 +387,6 @@ export class DatabaseService {
     }
   }
 
-  private static async getUserOilChangeRecords(userId: string): Promise<OilChangeRecord[]> {
-    try {
-      const cars = await this.getUserCars(userId);
-      const carIds = cars.map(car => car.id);
-      
-      if (carIds.length === 0) {
-        return [];
-      }
-
-      const q = query(
-        collection(firestore, 'oilChanges'),
-        where('carId', 'in', carIds),
-        orderBy('changeDate', 'desc')
-      );
-      
-      const querySnapshot = await getDocs(q);
-      const records: OilChangeRecord[] = [];
-      
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        records.push({
-          ...data,
-          id: doc.id,
-          createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
-          updatedAt: data.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
-        } as OilChangeRecord);
-      });
-      
-      return records;
-    } catch (error: any) {
-      throw error;
-    }
-  }
 
   static async addReminder(reminderData: Omit<Reminder, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {

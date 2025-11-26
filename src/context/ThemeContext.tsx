@@ -36,7 +36,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         setThemeModeState(savedTheme);
       }
     } catch (error) {
-      
+      // Use default theme
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     try {
       await AsyncStorage.setItem(THEME_STORAGE_KEY, mode);
     } catch (error) {
-      
+      // Silently handle error
     }
   };
 

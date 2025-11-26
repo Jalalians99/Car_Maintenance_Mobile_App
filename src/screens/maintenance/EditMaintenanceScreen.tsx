@@ -73,7 +73,6 @@ export const EditMaintenanceScreen: React.FC<Props> = ({ navigation, route }) =>
       setCost(maintenanceData.cost?.toString() || '');
       setNotes(maintenanceData.notes || '');
     } catch (error) {
-
       Alert.alert('Error', 'Failed to load maintenance record');
     } finally {
       setInitialLoading(false);

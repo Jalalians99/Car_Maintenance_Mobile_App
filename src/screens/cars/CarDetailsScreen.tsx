@@ -70,7 +70,7 @@ const CarDetailsScreen: React.FC<Props> = ({ navigation, route }) => {
       const records = await DatabaseService.getCarMaintenanceRecords(carId);
       setMaintenanceRecords(records);
     } catch (error) {
-      // Error loading maintenance records
+      // Silently handle error
     } finally {
       setLoadingMaintenance(false);
     }

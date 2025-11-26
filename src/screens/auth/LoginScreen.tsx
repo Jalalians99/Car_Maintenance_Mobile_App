@@ -28,31 +28,33 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const theme = useTheme();
   const { signIn } = useAuth();
 
-  const [email, setEmail] = useState('');
+  const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [emailOrUsernameError, setEmailOrUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const validateEmail = (email: string) => {
+  const validateEmailOrUsername = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+    
+    return emailRegex.test(input) || usernameRegex.test(input);
   };
 
   const validateForm = () => {
     let isValid = true;
 
-    if (!email.trim()) {
-      setEmailError('Email is required');
+    if (!emailOrUsername.trim()) {
+      setEmailOrUsernameError('Email or username is required');
       isValid = false;
-    } else if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
+    } else if (!validateEmailOrUsername(emailOrUsername.trim())) {
+      setEmailOrUsernameError('Please enter a valid email or username');
       isValid = false;
     } else {
-      setEmailError('');
+      setEmailOrUsernameError('');
     }
 
     if (!password.trim()) {
@@ -73,7 +75,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     setLoading(true);
     try {
-      await signIn(email.trim(), password);
+      await signIn(emailOrUsername.trim(), password);
       // Navigation handled by AuthContext
     } catch (error: any) {
       setSnackbarMessage(error.message || 'Failed to sign in');
@@ -137,20 +139,20 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <Card style={[styles.formCard, { backgroundColor: theme.colors.surface }]}>
               <Card.Content style={styles.formContent}>
                 <TextInput
-                  label="Email Address"
-                  value={email}
-                  onChangeText={setEmail}
+                  label="Email or Username"
+                  value={emailOrUsername}
+                  onChangeText={setEmailOrUsername}
                   mode="outlined"
-                  keyboardType="email-address"
                   autoCapitalize="none"
-                  autoComplete="email"
-                  left={<TextInput.Icon icon="email" />}
-                  error={!!emailError}
+                  autoComplete="username"
+                  placeholder="Enter your email or username"
+                  left={<TextInput.Icon icon="account" />}
+                  error={!!emailOrUsernameError}
                   style={styles.input}
                 />
-                {emailError ? (
+                {emailOrUsernameError ? (
                   <Text variant="bodySmall" style={[styles.errorText, { color: theme.colors.error }]}>
-                    {emailError}
+                    {emailOrUsernameError}
                   </Text>
                 ) : null}
 

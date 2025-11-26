@@ -51,7 +51,7 @@ export const ManageRemindersScreen: React.FC<Props> = ({ navigation }) => {
       const userReminders = await DatabaseService.getUserReminders(user.id);
       setReminders(userReminders);
     } catch (error) {
-      
+      // Silently handle error
     } finally {
       setLoading(false);
     }

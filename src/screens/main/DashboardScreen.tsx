@@ -29,7 +29,6 @@ interface Props {
 interface DashboardStats {
   totalCars: number;
   totalMaintenanceRecords: number;
-  totalOilChanges: number;
   totalMaintenanceCost: number;
   upcomingMaintenance: number;
 }
@@ -41,7 +40,6 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const [stats, setStats] = useState<DashboardStats>({
     totalCars: 0,
     totalMaintenanceRecords: 0,
-    totalOilChanges: 0,
     totalMaintenanceCost: 0,
     upcomingMaintenance: 0,
   });
@@ -55,7 +53,7 @@ const DashboardScreen: React.FC<Props> = ({ navigation }) => {
       const dashboardStats = await DatabaseService.getDashboardStats(user.id);
       setStats(dashboardStats);
     } catch (error) {
-      // Error loading dashboard data
+      // Silently handle error
     } finally {
       setLoading(false);
     }

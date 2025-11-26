@@ -57,7 +57,6 @@ export const CarMaintenanceRecordsScreen: React.FC<Props> = ({ navigation, route
       const records = await DatabaseService.getCarMaintenanceRecords(carId);
       setMaintenanceRecords(records);
     } catch (error) {
-
       Alert.alert('Error', 'Failed to load maintenance records');
     } finally {
       setLoading(false);
@@ -87,7 +86,6 @@ export const CarMaintenanceRecordsScreen: React.FC<Props> = ({ navigation, route
       Alert.alert('Success', 'Maintenance record deleted successfully');
       await loadData();
     } catch (error) {
-
       Alert.alert('Error', 'Failed to delete maintenance record');
     } finally {
       setDeleting(false);

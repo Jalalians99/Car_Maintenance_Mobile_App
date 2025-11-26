@@ -43,7 +43,7 @@ const CarsScreen: React.FC<Props> = ({ navigation }) => {
       setCars(userCars);
       setFilteredCars(userCars);
     } catch (error) {
-      // Error loading cars
+      // Silently handle error
     } finally {
       setLoading(false);
       setRefreshing(false);

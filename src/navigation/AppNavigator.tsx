@@ -20,17 +20,12 @@ import ProfileScreen from '../screens/main/ProfileScreen';
 import CarDetailsScreen from '../screens/cars/CarDetailsScreen';
 import AddCarScreen from '../screens/cars/AddCarScreen';
 import EditCarScreen from '../screens/cars/EditCarScreen';
-import CarPhotosScreen from '../screens/cars/CarPhotosScreen';
 
 import { AddMaintenanceScreen } from '../screens/maintenance/AddMaintenanceScreen';
 import { EditMaintenanceScreen } from '../screens/maintenance/EditMaintenanceScreen';
 import { CarMaintenanceRecordsScreen } from '../screens/maintenance/CarMaintenanceRecordsScreen';
 import { MaintenanceDetailsScreen } from '../screens/maintenance/MaintenanceDetailsScreen';
 
-import OilChangeListScreen from '../screens/oilchange/OilChangeListScreen';
-import AddOilChangeScreen from '../screens/oilchange/AddOilChangeScreen';
-import EditOilChangeScreen from '../screens/oilchange/EditOilChangeScreen';
-import OilChangeDetailsScreen from '../screens/oilchange/OilChangeDetailsScreen';
 
 import { ManageRemindersScreen } from '../screens/reminders/ManageRemindersScreen';
 import { AddReminderScreen } from '../screens/reminders/AddReminderScreen';
@@ -39,7 +34,6 @@ import { EditReminderScreen } from '../screens/reminders/EditReminderScreen';
 import SettingsScreen from '../screens/other/SettingsScreen';
 import WorkshopFinderScreen from '../screens/other/WorkshopFinderScreen';
 import NotificationsScreen from '../screens/other/NotificationsScreen';
-import ExportScreen from '../screens/other/ExportScreen';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
@@ -176,11 +170,6 @@ const AppNavigator = () => {
         component={EditCarScreen} 
         options={{ title: 'Edit Car' }}
       />
-      <Stack.Screen 
-        name="CarPhotos" 
-        component={CarPhotosScreen} 
-        options={{ title: 'Car Photos' }}
-      />
       
       <Stack.Screen 
         name="MaintenanceList" 
@@ -201,27 +190,6 @@ const AppNavigator = () => {
         name="MaintenanceDetails" 
         component={MaintenanceDetailsScreen} 
         options={{ title: 'Maintenance Details' }}
-      />
-      
-      <Stack.Screen 
-        name="OilChangeList" 
-        component={OilChangeListScreen} 
-        options={{ title: 'Oil Change Records' }}
-      />
-      <Stack.Screen 
-        name="AddOilChange" 
-        component={AddOilChangeScreen} 
-        options={{ title: 'Add Oil Change' }}
-      />
-      <Stack.Screen 
-        name="EditOilChange" 
-        component={EditOilChangeScreen} 
-        options={{ title: 'Edit Oil Change' }}
-      />
-      <Stack.Screen 
-        name="OilChangeDetails" 
-        component={OilChangeDetailsScreen} 
-        options={{ title: 'Oil Change Details' }}
       />
       
       <Stack.Screen 
@@ -254,11 +222,6 @@ const AppNavigator = () => {
         name="Notifications" 
         component={NotificationsScreen} 
         options={{ title: 'Notifications' }}
-      />
-      <Stack.Screen 
-        name="Export" 
-        component={ExportScreen} 
-        options={{ title: 'Export Data' }}
       />
     </Stack.Navigator>
   );

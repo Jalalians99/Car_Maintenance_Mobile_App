@@ -66,7 +66,7 @@ export const AddReminderScreen: React.FC<Props> = ({ navigation, route }) => {
       const userCars = await DatabaseService.getUserCars(user.id);
       setCars(userCars);
     } catch (error) {
-
+      // Silently handle error
     }
   };
 
